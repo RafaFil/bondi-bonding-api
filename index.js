@@ -25,28 +25,10 @@ app.use(cors());
 app.use(morgan('combined'));
 
 const usersRouter = require('./src/routes/users');
+const baseRoute = "/api/v1";
 
-const v1 = {
-    users: "users",
-    auth: "auth",
-    profile_pic: "pfp",
-    public_profile: "public_profile",
-    complete_porfile: "complete_profile",
-    map: "map",
-    bus_stop: "bus_stop",
-    bus_line: "bus_line",
-    trip: "trip",
-    chatsPreview: "chats_preview",
-    chat: "chat",
-    liveChat: "live_chat",
-    staticText: "static_text"
-}
 
-Object.entries(v1).forEach(([key, value]) => {
-    v1[key] = `/api/v1/${value}`;
-});
-
-app.use(v1.users, usersRouter);
+app.use(baseRoute, usersRouter);
 
 // starting the server
 app.listen(process.env.PORT, () => {
