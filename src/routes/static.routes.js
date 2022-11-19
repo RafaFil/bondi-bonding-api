@@ -1,10 +1,11 @@
-var express = require('express');
-var router = express.Router();
-const {getAllFaqs, getAllTos} = require('../controllers/static.controller')
-const baseRoute = '/routes'
+const { Router } = require('express');
+const { getAllFaqs, getAllTos } = require('../controllers/static.controller');
+const BASE_ROUTE = '/static'
 
-router.get(`${baseRoute}/faqs`, getAllFaqs);
+const staticRouter = Router();
 
-router.get(`${baseRoute}/tos`, getAllTos);
+staticRouter.get(`${BASE_ROUTE}/faqs`, getAllFaqs);
 
-module.exports = router;
+staticRouter.get(`${BASE_ROUTE}/tos`, getAllTos);
+
+module.exports = staticRouter;
