@@ -8,7 +8,7 @@ const BASE_PROJECTION_STAGE = {
 };
 
 const getStops = async (req, res) => {
-    const db = await getDb();
+    const db = getDb();
 
     db.collection(COLLECTION_NAME)
         .aggregate([
@@ -30,7 +30,7 @@ const getStops = async (req, res) => {
 };
 
 const getStopsGeo = async (req, res) => {
-    const db = await getDb();
+    const db = getDb();
 
     const { long, lat, minDist, maxDist, minLines } = req.query;
 
@@ -95,7 +95,7 @@ const getStopsGeo = async (req, res) => {
 };
 
 const getStopById = async (req, res) => {
-    const db = await getDb();
+    const db = getDb();
 
     const { stopId } = req.params;
 

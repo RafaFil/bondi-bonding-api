@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
-const validateJWT = ( req, res = response, next) => {
+const validateJWT = ( req, res, next) => {
     let token = req.header('Authorization');
 
     if ( !token || !token.startsWith('Bearer ') ) {
@@ -26,4 +26,8 @@ const validateJWT = ( req, res = response, next) => {
     }
 
     next();
+}
+
+module.exports = {
+    validateJWT
 }

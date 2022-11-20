@@ -14,6 +14,7 @@ const stopsRouter = require('./src/routes/stops.routes');
 const linesRouter = require('./src/routes/lines.routes');
 const staticRouter = require('./src/routes/static.routes');
 const profilePictureRouter = require('./src/routes/profilePicture.routes');
+const authRouter = require('./src/routes/auth.routes');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -36,6 +37,7 @@ app.use(BASE_ROUTE, stopsRouter);
 app.use(BASE_ROUTE, linesRouter);
 app.use(BASE_ROUTE, staticRouter);
 app.use(BASE_ROUTE, profilePictureRouter);
+app.use(BASE_ROUTE, authRouter);
 
 connectToServer()
 .then(() => {

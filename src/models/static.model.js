@@ -6,7 +6,7 @@ const BASE_PROJECTION = {
 };
 
 async function getByType(type) {
-    const db = await getDb();
+    const db = getDb();
     return db.collection(COLLECTION_NAME)
     .aggregate([
         { $match : { type : type } },
