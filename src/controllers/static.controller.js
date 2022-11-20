@@ -1,24 +1,53 @@
-const { getByType } = require('../services/static.service');
+const { getByType } = require('../models/static.model');
 
 
 const getAllFaqs = async (req, res) => {
-    const faqs = await getByType("faq");
-    if (faqs.length === 0) {
-        return res.status(404).json({error:"not found"});
-    }
-    if (faqs) {
-        return res.status(200).json(faqs);
-    }
+    getByType('faq')
+    .then( faqs => {
+        if (faqs.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `No FAQs were found.`
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: faqs
+        });
+    })
+    .catch( err => {
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: `Internal server error.`
+        });
+    });
 }
 
 const getAllTos = async (req, res) => {
-    const tos = await getByType("text");
-    if (tos.length === 0) {
-        return res.status(404).json({error:"not found"});
-    }
-    if (tos) {
-        return res.status(200).json(tos);
-    }
+    getByType('tos')
+    .then( tos => {
+        if (tos.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No ToS were found'
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: tos[0]
+        });
+    })
+    .catch( err => {
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: `Internal server error.`
+        });
+    });
+    
 }
 
 module.exports = {
