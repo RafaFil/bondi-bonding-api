@@ -13,6 +13,7 @@ const { connectToServer } = require('./src/configs/db.config');
 const stopsRouter = require('./src/routes/stops.routes');
 const linesRouter = require('./src/routes/lines.routes');
 const staticRouter = require('./src/routes/static.routes');
+const profilePictureRouter = require('./src/routes/profilePicture.routes');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -31,10 +32,10 @@ app.use(cors());
 // adding morgan to log HTTP requests
 app.use(morgan('combined'));
 
-
 app.use(BASE_ROUTE, stopsRouter);
 app.use(BASE_ROUTE, linesRouter);
 app.use(BASE_ROUTE, staticRouter);
+app.use(BASE_ROUTE, profilePictureRouter);
 
 connectToServer()
 .then(() => {
