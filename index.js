@@ -9,6 +9,13 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
+const { connectToServer } = require('./src/configs/db.config');
+const userRouter = require('./src/routes/users');
+const stopsRouter = require('./src/routes/stops.routes');
+const linesRouter = require('./src/routes/lines.routes');
+
+const BASE_ROUTE = "/api/v1";
+
 // defining the Express app
 const app = express();
 
@@ -24,13 +31,13 @@ app.use(cors());
 // adding morgan to log HTTP requests
 app.use(morgan('combined'));
 
-const usersRouter = require('./src/routes/users');
-const baseRoute = "/api/v1";
+app.use(BASE_ROUTE, userRouter);
+app.use(BASE_ROUTE, stopsRouter);
+app.use(BASE_ROUTE, linesRouter);
 
-
-app.use(baseRoute, usersRouter);
-
-// starting the server
-app.listen(process.env.PORT, () => {
-    console.log(`listening on port ${process.env.PORT}`);
+connectToServer()
+.then(() => {
+    app.listen(process.env.PORT, () => {
+        console.log(`listening on port ${process.env.PORT}`);
+    });
 });
