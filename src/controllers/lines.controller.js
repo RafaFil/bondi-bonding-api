@@ -51,22 +51,22 @@ const getLines = async (req, res) => {
     });
 };
 
-const getLinesById = async (req, res) => {
+const getLineById = async (req, res) => {
     const db = await getDb();
 
-    const { stopId } = req.params;
+    const { lineId } = req.params;
 
-    if (isNaN(stopId)) {
+    if (isNaN(lineId)) {
         return res.status(400).json({
             success: false,
-            message: `${stopId} is not a valid number.`
+            message: `${lineId} is not a valid number.`
         });
     }
 
     db.collection(COLLECTION_NAME)
     .aggregate([
         {
-            $match: { busstopId: +stopId }
+            $match: { lineId: +lineId }
         },
         BASE_PROJECTION_STAGE
     ]).toArray()
@@ -74,7 +74,7 @@ const getLinesById = async (req, res) => {
         if (result.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: `No stop was found for id ${stopId}`
+                message: `No line was found for id ${lineId}`
             });
         }
 
@@ -94,5 +94,5 @@ const getLinesById = async (req, res) => {
 
 module.exports = {
     getLines,
-    getLinesById
+    getLineById
 }
