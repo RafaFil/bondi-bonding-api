@@ -10,9 +10,9 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const { connectToServer } = require('./src/configs/db.config');
-const userRouter = require('./src/routes/users');
 const stopsRouter = require('./src/routes/stops.routes');
 const linesRouter = require('./src/routes/lines.routes');
+const staticRouter = require('./src/routes/static.routes');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -31,9 +31,10 @@ app.use(cors());
 // adding morgan to log HTTP requests
 app.use(morgan('combined'));
 
-app.use(BASE_ROUTE, userRouter);
+
 app.use(BASE_ROUTE, stopsRouter);
 app.use(BASE_ROUTE, linesRouter);
+app.use(BASE_ROUTE, staticRouter);
 
 connectToServer()
 .then(() => {
