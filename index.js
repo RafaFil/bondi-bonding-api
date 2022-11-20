@@ -33,11 +33,11 @@ app.use(cors());
 // adding morgan to log HTTP requests
 app.use(morgan('combined'));
 
+app.use(BASE_ROUTE, authRouter);
 app.use(BASE_ROUTE, stopsRouter);
 app.use(BASE_ROUTE, linesRouter);
 app.use(BASE_ROUTE, staticRouter);
 app.use(BASE_ROUTE, profilePictureRouter);
-app.use(BASE_ROUTE, authRouter);
 
 connectToServer()
 .then(() => {
