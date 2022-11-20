@@ -1,4 +1,4 @@
-const { storeInS3, getPublicUrl } = require("../models/profilePicture.model");
+const { getPublicUrl, savePicture } = require("../models/profilePicture.model");
 
 const getPicture = async (req, res) => {
     const result = await getPublicUrl(req.params.picKey);
@@ -17,7 +17,7 @@ const getPicture = async (req, res) => {
 };
 
 const postPicture = async (req, res) => {
-    const result = await storeInS3(req.file);
+    const result = await savePicture(req.file);
 
     if (result.success) {
         return res.status(200).json({
