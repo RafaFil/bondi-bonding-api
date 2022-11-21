@@ -16,6 +16,8 @@ const stopsRouter = require('./src/routes/stops.routes');
 const linesRouter = require('./src/routes/lines.routes');
 const profilePictureRouter = require('./src/routes/profilePicture.routes');
 const mapRouter = require('./src/routes/map.routes');
+const userRouter = require('./src/routes/user.routes');
+const { validateJWT } = require('./src/middlewares/validateJWT.middleware');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -34,10 +36,15 @@ app.use(cors());
 // adding morgan to log HTTP requests
 app.use(morgan('combined'));
 
+// public routes
 app.use(BASE_ROUTE, authRouter);
+app.use(BASE_ROUTE, userRouter);
+app.use(BASE_ROUTE, staticRouter);
+
+// protected routes
+app.use(validateJWT);
 app.use(BASE_ROUTE, stopsRouter);
 app.use(BASE_ROUTE, linesRouter);
-app.use(BASE_ROUTE, staticRouter);
 app.use(BASE_ROUTE, profilePictureRouter);
 app.use(BASE_ROUTE, mapRouter);
 
