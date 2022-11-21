@@ -6,7 +6,7 @@ const BASE_PROJECTION_STAGE = {
 };
 
 const getLines = async (req, res) => {
-    const db = await getDb();
+    const db = getDb();
 
     const aggregateQuery = [ BASE_PROJECTION_STAGE ];
     if (req.query.stopId) {
@@ -52,7 +52,7 @@ const getLines = async (req, res) => {
 };
 
 const getLineById = async (req, res) => {
-    const db = await getDb();
+    const db = getDb();
 
     const { lineId } = req.params;
 

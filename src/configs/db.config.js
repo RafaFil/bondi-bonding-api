@@ -23,7 +23,7 @@ module.exports = {
         });
     },
 
-    getDb: async function () {
+    getDb: function () {
         return dbConnection;
     }
 };
