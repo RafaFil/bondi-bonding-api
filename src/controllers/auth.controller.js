@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 
-const { getByCredentials } = require('../models/users.model');
+const { findByCredentials, findByUsername } = require('../models/users.model');
 const { generateJWT } = require('../helpers/jwt.helper');
 
 const BCRYPT_SALT = process.env.BCRYPT_SALT;
@@ -16,7 +16,7 @@ const doAuth = async ({ body }, res) => {
     }
 
     const hashpwd = await bcrypt.hash(password, BCRYPT_SALT);
-    const user = await getByCredentials(username, hashpwd);
+    const user = await findByCredentials(username, hashpwd);
 
     if (!user) {
         return res.status(401).json({
@@ -36,6 +36,30 @@ const doAuth = async ({ body }, res) => {
     });
 };
 
+const renewToken = async (req, res) => {
+    const { username } = req;
+
+    const user = await findByUsername(username);
+
+    if (!user) {
+        res.status(404).json({
+            success: false,
+            message: `No user was found for username ${username}`
+        });
+    }
+
+    const token = await generateJWT( username, user.name );
+
+    return res.status(200).json({
+        success: true,
+        data: {
+            user,
+            token
+        }
+    });
+}
+
 module.exports = {
-    doAuth
+    doAuth,
+    renewToken
 }
