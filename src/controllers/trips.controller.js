@@ -1,13 +1,25 @@
+const { ObjectId } = require("mongodb");
 const { findTripById, findTrips, insertTrip } = require("../models/trips.model");
 
 
 const getTrips = async (req, res) => {
-    const trips = await findTrips();
 
-    if (trips.success) {
+    const matchQuery = {};
+
+    if (req.query.stopId) {
+        matchQuery.stopId = +req.query.stopId;
+    }
+
+    if (req.query.busLineId) {
+        matchQuery.busLineId = +req.query.busLineId;
+    }
+
+    const result = await findTrips(matchQuery);
+
+    if (result.success) {
         return res.status(200).json({
             success: true,
-            data: trips.data
+            data: result.data
         });
     }
 
@@ -18,12 +30,12 @@ const getTrips = async (req, res) => {
 };
 
 const getTripById = async (req, res) => {
-    const trip = await findTripById(req.params.tripId);
+    const result = await findTripById(req.params.tripId);
 
-    if (trip.success) {
+    if (result.success) {
         return res.status(200).json({
             success: true,
-            data: trip.data
+            data: result.data
         });
     }
 
@@ -36,14 +48,21 @@ const getTripById = async (req, res) => {
 const createTrip = async ({ body }, res) => {
     const { userId, from, to, busLineId, stopId, schedule, description, filters } = body;
 
+    if (!userId || !busLineId || !stopId || !from || !to || !schedule) {
+        return res.status(400).json({
+            success: false,
+            message: 'Required fields missing. Required fields are: userId, busLineId, stopId, from, to, schedule'
+        });
+    }
+
     const userDoc = {
-        userId, 
-        from, 
-        to, 
-        busLineId, 
-        stopId, 
-        schedule, 
-        description, 
+        userId: new ObjectId(userId), 
+        from,
+        to,
+        busLineId: +busLineId,
+        stopId: +stopId,
+        schedule,
+        description,
         filters
     };
 

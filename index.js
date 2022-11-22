@@ -18,6 +18,7 @@ const profilePictureRouter = require('./src/routes/profilePicture.routes');
 const mapRouter = require('./src/routes/map.routes');
 const userRouter = require('./src/routes/user.routes');
 const { validateJWT } = require('./src/middlewares/validateJWT.middleware');
+const tripsRouter = require('./src/routes/trips.routes');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -47,6 +48,7 @@ app.use(BASE_ROUTE, stopsRouter);
 app.use(BASE_ROUTE, linesRouter);
 app.use(BASE_ROUTE, profilePictureRouter);
 app.use(BASE_ROUTE, mapRouter);
+app.use(BASE_ROUTE, tripsRouter);
 
 connectToServer()
 .then(() => {
