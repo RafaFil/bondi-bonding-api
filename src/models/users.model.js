@@ -29,7 +29,17 @@ const findByUsername = async (username) => {
     return result[0];
 }
 
+const insertUser = async(user) => {
+    const db = getDb()
+
+    const result =  db.collection(COLLECTION_NAME)
+    .insertOne(user);
+
+    return result;
+}
+
 module.exports = {
     findByCredentials,
-    findByUsername
+    findByUsername,
+    insertUser
 }
