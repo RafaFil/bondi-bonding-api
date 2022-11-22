@@ -37,7 +37,7 @@ const getAllTos = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            data: tos[0]
+            data: tos[0].text
         });
     })
     .catch( err => {

@@ -32,7 +32,7 @@ const findByUsername = async (username) => {
 const insertUser = async(user) => {
     const db = getDb()
 
-    const result = db.collection(COLLECTION_NAME)
+    const result =  db.collection(COLLECTION_NAME)
     .insertOne(user);
 
     return result;
