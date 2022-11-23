@@ -90,62 +90,19 @@ const searchTrips = async ({ body }, res) => {
         });
     }
 
-    const matchQuery = {
-        $and: [
-            {
-                $or: [ 
-                    { 'filters.gender': { $exists: false } }, { 'filters.gender': body.myGender }
-                ] 
-            },
-            {
-                $or: [ 
-                    { 'filters.ageRange.min': { $exists: false } }, { 'filters.ageRange.min': { $lte: body.myAge } }
-                ]
-            },
-            {
-                $or: [ 
-                    { 'filters.ageRange.max': { $exists: false } }, { 'filters.ageRange.max': { $gte: body.myAge } }
-                ]
-            }
-        ]
+    const params = {
+        myAge: body.myAge,
+        myGender: body.myGender,
+        from: body.from,
+        to: body.to,
+        minAge: body.filters?.ageRange?.min,
+        maxAge: body.filters?.ageRange?.max,
+        gender: body.filters?.gender,
+        likes: body.filters?.likes
     };
 
-    if (body.from) {
-        matchQuery.from = body.from;
-    }
-
-    if (body.to) {
-        matchQuery.to = body.to;
-    }
-
-    if (body.filters) {
-        const { ageRange, gender, likes } = body.filters;
-
-        if (ageRange) {
-            const { min, max } = ageRange;
-            matchQuery['user.age'] = {};
-            if (min) {
-                matchQuery['user.age'].$gte = min;
-            }
-            if (max) {
-                matchQuery['user.age'].$lte = max;
-            }
-        }
-
-        if (gender) {
-            matchQuery['user.gender'] = gender;
-        }
-
-        if (likes && likes.length > 0) {
-            matchQuery['filters.likes'] = {
-                $elemMatch: {
-                    $in: likes
-                }
-            };
-        }
-    }
-
-    const result = await filterTrips(matchQuery);
+    console.log(params);
+    const result = await filterTrips(params);
 
     if (result.success) {
         return res.status(200).json({
