@@ -8,7 +8,8 @@ const USERS_COLLECTION = process.env.USERS_COLLECTION;
 const BASE_PROJECTION = [
     { '$set': { 
         'tripId': '$_id', 
-        'user.uid': '$user._id'
+        'user.uid': '$user._id',
+        'user.age': { $dateDiff: { startDate: "$user.birthdate", endDate: "$$NOW", unit: "year" } }
     } },
     { $project: { 
         '_id': 0, 
@@ -89,6 +90,75 @@ const findTrips = async (matchQuery) => {
     }
 }
 
+const filterTrips = async ({ myAge, myGender, from, to, minAge, maxAge, gender, likes }) => {
+
+    const matchQuery = {
+        $and: [
+            {
+                $or: [ 
+                    { 'filters.gender': { $exists: false } }, { 'filters.gender': myGender }
+                ] 
+            },
+            {
+                $or: [ 
+                    { 'filters.ageRange.min': { $exists: false } }, { 'filters.ageRange.min': { $lte: myAge } }
+                ]
+            },
+            {
+                $or: [ 
+                    { 'filters.ageRange.max': { $exists: false } }, { 'filters.ageRange.max': { $gte: myAge } }
+                ]
+            }
+        ]
+    };
+    
+    if (from) {
+        matchQuery.from = from;
+    }
+
+    if (to) {
+        matchQuery.to = to;
+    }
+
+    if (minAge || maxAge) {
+        matchQuery['user.age'] = {};
+        if (minAge) {
+            matchQuery['user.age'].$gte = minAge;
+        }
+        if (maxAge) {
+            matchQuery['user.age'].$lte = maxAge;
+        }
+    }
+
+    if (gender) {
+        matchQuery['user.gender'] = gender;
+    }
+
+    if (likes && likes.length > 0) {
+        matchQuery['filters.likes'] = {
+            $elemMatch: {
+                $in: likes
+            }
+        };
+    }
+
+    console.log(matchQuery);
+
+    const tripArr = await getDb()
+    .collection(COLLECTION_NAME)
+    .aggregate([
+        ...LOOKUP,
+        ...BASE_PROJECTION,
+        { $match: matchQuery }
+    ])
+    .toArray();
+
+    return {
+        success: true,
+        data: tripArr
+    }
+}
+
 const insertTrip = async (tripDoc) => {
     const result = await getDb()
     .collection(COLLECTION_NAME)
@@ -107,5 +177,6 @@ const insertTrip = async (tripDoc) => {
 module.exports = {
     findTripById,
     findTrips,
+    filterTrips,
     insertTrip
 }

@@ -1,5 +1,5 @@
 const { ObjectId } = require("mongodb");
-const { findTripById, findTrips, insertTrip } = require("../models/trips.model");
+const { findTripById, findTrips, insertTrip, filterTrips } = require("../models/trips.model");
 
 
 const getTrips = async (req, res) => {
@@ -81,8 +81,45 @@ const createTrip = async ({ body }, res) => {
     });
 }
 
+const searchTrips = async ({ body }, res) => {
+
+    if (!body.myAge || !body.myGender) {
+        return res.status(400).json({
+            success: false,
+            message: 'Required fields missing. Required fields are: myAge, myGender'
+        });
+    }
+
+    const params = {
+        myAge: body.myAge,
+        myGender: body.myGender,
+        from: body.from,
+        to: body.to,
+        minAge: body.filters?.ageRange?.min,
+        maxAge: body.filters?.ageRange?.max,
+        gender: body.filters?.gender,
+        likes: body.filters?.likes
+    };
+
+    console.log(params);
+    const result = await filterTrips(params);
+
+    if (result.success) {
+        return res.status(200).json({
+            success: true,
+            data: result.data
+        });
+    }
+
+    return res.status(500).json({
+        success: false,
+        message: 'Internal server error.'
+    });
+};
+
 module.exports = {
     getTrips,
     getTripById,
-    createTrip
+    createTrip,
+    searchTrips
 }
