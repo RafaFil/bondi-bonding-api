@@ -8,7 +8,8 @@ const USERS_COLLECTION = process.env.USERS_COLLECTION;
 const BASE_PROJECTION = [
     { '$set': { 
         'tripId': '$_id', 
-        'user.uid': '$user._id'
+        'user.uid': '$user._id',
+        'user.age': { $dateDiff: { startDate: "$user.birthdate", endDate: "$$NOW", unit: "year" } }
     } },
     { $project: { 
         '_id': 0, 
@@ -89,6 +90,22 @@ const findTrips = async (matchQuery) => {
     }
 }
 
+const filterTrips = async (matchQuery) => {
+    const tripArr = await getDb()
+    .collection(COLLECTION_NAME)
+    .aggregate([
+        ...LOOKUP,
+        ...BASE_PROJECTION,
+        { $match: matchQuery }
+    ])
+    .toArray();
+
+    return {
+        success: true,
+        data: tripArr
+    }
+}
+
 const insertTrip = async (tripDoc) => {
     const result = await getDb()
     .collection(COLLECTION_NAME)
@@ -107,5 +124,6 @@ const insertTrip = async (tripDoc) => {
 module.exports = {
     findTripById,
     findTrips,
+    filterTrips,
     insertTrip
 }

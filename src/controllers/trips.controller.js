@@ -1,5 +1,5 @@
 const { ObjectId } = require("mongodb");
-const { findTripById, findTrips, insertTrip } = require("../models/trips.model");
+const { findTripById, findTrips, insertTrip, filterTrips } = require("../models/trips.model");
 
 
 const getTrips = async (req, res) => {
@@ -81,8 +81,88 @@ const createTrip = async ({ body }, res) => {
     });
 }
 
+const searchTrips = async ({ body }, res) => {
+
+    if (!body.myAge || !body.myGender) {
+        return res.status(400).json({
+            success: false,
+            message: 'Required fields missing. Required fields are: myAge, myGender'
+        });
+    }
+
+    const matchQuery = {
+        $and: [
+            {
+                $or: [ 
+                    { 'filters.gender': { $exists: false } }, { 'filters.gender': body.myGender }
+                ] 
+            },
+            {
+                $or: [ 
+                    { 'filters.ageRange.min': { $exists: false } }, { 'filters.ageRange.min': { $lte: body.myAge } }
+                ]
+            },
+            {
+                $or: [ 
+                    { 'filters.ageRange.max': { $exists: false } }, { 'filters.ageRange.max': { $gte: body.myAge } }
+                ]
+            }
+        ]
+    };
+
+    if (body.from) {
+        matchQuery.from = body.from;
+    }
+
+    if (body.to) {
+        matchQuery.to = body.to;
+    }
+
+    if (body.filters) {
+        const { ageRange, gender, likes } = body.filters;
+
+        if (ageRange) {
+            const { min, max } = ageRange;
+            matchQuery['user.age'] = {};
+            if (min) {
+                matchQuery['user.age'].$gte = min;
+            }
+            if (max) {
+                matchQuery['user.age'].$lte = max;
+            }
+        }
+
+        if (gender) {
+            matchQuery['user.gender'] = gender;
+        }
+
+        if (likes && likes.length > 0) {
+            matchQuery['filters.likes'] = {
+                $elemMatch: {
+                    $in: likes
+                }
+            };
+        }
+    }
+
+    const result = await filterTrips(matchQuery);
+
+    if (result.success) {
+        return res.status(200).json({
+            success: true,
+            data: result.data
+        });
+    }
+
+    return res.status(500).json({
+        success: false,
+        message: 'Internal server error.'
+    });
+};
+
 module.exports = {
     getTrips,
     getTripById,
-    createTrip
+    createTrip,
+    searchTrips
 }
