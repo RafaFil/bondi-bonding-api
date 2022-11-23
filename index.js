@@ -19,6 +19,7 @@ const mapRouter = require('./src/routes/map.routes');
 const userRouter = require('./src/routes/user.routes');
 const { validateJWT } = require('./src/middlewares/validateJWT.middleware');
 const tripsRouter = require('./src/routes/trips.routes');
+const completeProfile = require('./src/routes/completeProfile.routes');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -41,6 +42,7 @@ app.use(morgan('combined'));
 app.use(BASE_ROUTE, authRouter);
 app.use(BASE_ROUTE, userRouter);
 app.use(BASE_ROUTE, staticRouter);
+app.use(BASE_ROUTE,completeProfile);
 
 // protected routes
 app.use(validateJWT);

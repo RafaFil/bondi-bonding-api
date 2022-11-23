@@ -50,7 +50,6 @@ const createUser = async ({ body },res) =>{
         }
     })
     .catch( err => {
-        console.log(err);
         if(err.code === 11000) {
             return res.status(400).json({
                 success: false,
