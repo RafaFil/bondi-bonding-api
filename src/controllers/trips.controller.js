@@ -2,17 +2,22 @@ const { ObjectId } = require("mongodb");
 const { findTripById, findTrips, insertTrip, filterTrips } = require("../models/trips.model");
 
 
-const getTrips = async (req, res) => {
+const getTrips = async ({ query }, res) => {
 
-    const matchQuery = {};
+    const { stopId, busLineId, userId } = query;
 
-    if (req.query.stopId) {
-        matchQuery.stopId = +req.query.stopId;
+    if (!stopId || !busLineId || !userId) {
+        return res.status(400).json({
+            success: false,
+            message: 'Required fields missing. Required fields are: userId, busLineId, stopId, from, to, schedule'
+        });
     }
 
-    if (req.query.busLineId) {
-        matchQuery.busLineId = +req.query.busLineId;
-    }
+    const matchQuery = {
+        stopId: +stopId,
+        busLineId: +busLineId,
+        userId: { $ne: new ObjectId(userId) }
+    };
 
     const result = await findTrips(matchQuery);
 

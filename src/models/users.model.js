@@ -22,6 +22,7 @@ const findByUsername = async (username) => {
     const result = await db.collection(COLLECTION_NAME)
     .aggregate([
         { $match: { username } },
+        { $set: { uid: '$_id' } },
         BASE_PROJECTION
     ])
     .toArray();
