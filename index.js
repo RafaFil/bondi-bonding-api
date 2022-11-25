@@ -21,6 +21,7 @@ const userRouter = require('./src/routes/user.routes');
 const tripsRouter = require('./src/routes/trips.routes');
 const profileRouter = require('./src/routes/profile.routes');
 const filtersRouter = require('./src/routes/filters.routes');
+const resetPasswordRouter = require('./src/routes/resetPassword.routes');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -40,12 +41,12 @@ app.use(cors());
 app.use(morgan('combined'));
 
 // public routes
-app.use(BASE_ROUTE, authRouter);
+app.use(BASE_ROUTE, resetPasswordRouter);
 app.use(BASE_ROUTE, userRouter);
 app.use(BASE_ROUTE, staticRouter);
+app.use(BASE_ROUTE, authRouter);
 
 // protected routes
-app.use(validateJWT);
 app.use(BASE_ROUTE, stopsRouter);
 app.use(BASE_ROUTE, linesRouter);
 app.use(BASE_ROUTE, profilePictureRouter);

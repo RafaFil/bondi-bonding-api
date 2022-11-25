@@ -4,8 +4,7 @@ const { validateJWT } = require("../middlewares/validateJWT.middleware");
 
 const BASE_ROUTE = '/trips';
 const tripsRouter = Router();
-
-tripsRouter.use(validateJWT);
+tripsRouter.use(BASE_ROUTE, validateJWT);
 
 tripsRouter.get(BASE_ROUTE, async (req, res) => {
     return await getTrips(req, res);

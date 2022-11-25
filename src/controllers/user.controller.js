@@ -21,12 +21,12 @@ const createUser = async ({ body },res) =>{
     }
 
     const user = {
-        name : name,
-        username : username,
-        hashpwd : hashpwd,
-        gender : gender,
-        phone : phone,
-        email : email,
+        name: name,
+        username: username,
+        hashpwd: hashpwd,
+        gender: gender,
+        phone: phone,
+        email: email,
     };
 
     if (birthdate) {
