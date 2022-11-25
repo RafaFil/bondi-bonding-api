@@ -20,6 +20,7 @@ const mapRouter = require('./src/routes/map.routes');
 const userRouter = require('./src/routes/user.routes');
 const tripsRouter = require('./src/routes/trips.routes');
 const profileRouter = require('./src/routes/profile.routes');
+const filtersRouter = require('./src/routes/filters.routes');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -51,6 +52,7 @@ app.use(BASE_ROUTE, profilePictureRouter);
 app.use(BASE_ROUTE, mapRouter);
 app.use(BASE_ROUTE, tripsRouter);
 app.use(BASE_ROUTE, profileRouter);
+app.use(BASE_ROUTE, filtersRouter);
 
 connectToServer()
 .then(() => {
