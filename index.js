@@ -10,6 +10,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const { connectToServer } = require('./src/configs/db.config');
+const { validateJWT } = require('./src/middlewares/validateJWT.middleware');
 const authRouter = require('./src/routes/auth.routes');
 const staticRouter = require('./src/routes/static.routes');
 const stopsRouter = require('./src/routes/stops.routes');
@@ -17,9 +18,8 @@ const linesRouter = require('./src/routes/lines.routes');
 const profilePictureRouter = require('./src/routes/profilePicture.routes');
 const mapRouter = require('./src/routes/map.routes');
 const userRouter = require('./src/routes/user.routes');
-const { validateJWT } = require('./src/middlewares/validateJWT.middleware');
 const tripsRouter = require('./src/routes/trips.routes');
-const completeProfile = require('./src/routes/completeProfile.routes');
+const profileRouter = require('./src/routes/profile.routes');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -42,7 +42,6 @@ app.use(morgan('combined'));
 app.use(BASE_ROUTE, authRouter);
 app.use(BASE_ROUTE, userRouter);
 app.use(BASE_ROUTE, staticRouter);
-app.use(BASE_ROUTE,completeProfile);
 
 // protected routes
 app.use(validateJWT);
@@ -51,6 +50,7 @@ app.use(BASE_ROUTE, linesRouter);
 app.use(BASE_ROUTE, profilePictureRouter);
 app.use(BASE_ROUTE, mapRouter);
 app.use(BASE_ROUTE, tripsRouter);
+app.use(BASE_ROUTE, profileRouter);
 
 connectToServer()
 .then(() => {

@@ -1,23 +1,36 @@
-const { getCompleteProfile, updateProfile } = require('../models/profile.model');
+const { getCompleteProfile, updateProfile, getPublicProfile } = require('../models/profile.model');
+const { getPublicUrl } = require('../models/profilePicture.model');
 
-const getProfile = async (req, res) => {
+const setProfilePicture = async (userDoc) => {
+    if (!userDoc.iconId) {
+        return userDoc;
+    }
+    
+    const result = await getPublicUrl(userDoc.iconId);
+    if (result.success) {
+        userDoc.iconUrl = result.url;
+    }
 
-    getCompleteProfile(req.params.username)
-    .then( result => {
-        if (result.username){
+    return userDoc;
+}
+
+const getProfile = async (req, res, profFn = getPublicProfile) => {
+    profFn(req.params.username)
+    .then( async (result) => {
+        if (result.success) {
             return res.status(200).json({
                 success: true,
-                data: result
-            })
-        }
-        else {
+                data: await setProfilePicture(result.data)
+            });
+        } else {
             return res.status(404).json({
                 success: false,
-                message:'User not found'
-            })
+                message: `User with username ${req.params.username} not found`
+            });
         }
     })
     .catch( err => {
+        console.log(err);
         return res.status(500).json({
             success: false,
             message:'Internal server error'
@@ -25,15 +38,22 @@ const getProfile = async (req, res) => {
     });
 }
 
-const editProfile = async ( req, res) => {
+const getPrivateProfile = async (req, res) => {
+    return getProfile(req, res, getCompleteProfile);
+}
 
-    const username = req.params.username;
-    const { email, phone, description } = req.body;
+const getPubProfile = async (req, res) => {
+    return getProfile(req, res, getPublicProfile);
+}
+
+const editProfile = async ( { params, body }, res) => {
+    const username = params.username;
 
     const fieldsToChange = {
-        email : email,
-        phone : phone,
-        description : description
+        email: body.email,
+        phone: body.phone,
+        description: body.description,
+        iconId: body.iconId
     }
 
     for (field in fieldsToChange) {
@@ -47,19 +67,17 @@ const editProfile = async ( req, res) => {
         if (result.acknowledged) { 
             return res.status(200).json({
                 success: true,
-                data: 'Data changed'
+                data: `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s).`
             });
-        }
-
-        if (!result.acknowledged) {
+        } else {
             return res.status(400).json({
                 success: false,
-                message: 'Error while updating'
+                message: 'Error during update with the given parameters.'
             });
         }
-    }
-    )
+    })
     .catch( err => {
+        console.log(err);
         return res.status(500).json({
             success: false,
             message:'Internal server error'
@@ -69,6 +87,7 @@ const editProfile = async ( req, res) => {
 }
 
 module.exports = {
-    getProfile,
-    editProfile
+    getPrivateProfile,
+    editProfile,
+    getPubProfile
 }

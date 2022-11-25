@@ -2,8 +2,12 @@ const { getUrl, putInS3, deleteFromS3 } = require("../services/s3.service");
 
 // Creates or updates a profile picture in the s3 bucket.
 // picKey is used for matching and updating an existing picture.
-const savePicture = async ({ buffer, mimetype }, picKey) => {
-    return putInS3({ buffer, mimetype, picKey });
+const savePicture = async (file, picKey) => {
+    return putInS3({ 
+        buffer: file.buffer, 
+        mimeType: file.mimetype, 
+        picKey 
+    });
 }
 
 // Deletes a file with the given fileKey from the s3 bucket.
