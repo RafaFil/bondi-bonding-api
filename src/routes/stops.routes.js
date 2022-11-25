@@ -1,8 +1,10 @@
 const { Router } = require("express");
 const { getStops, getStopById, getStopsGeo } = require("../controllers/stops.controller");
+const { validateJWT } = require("../middlewares/validateJWT.middleware");
 
 const BASE_ROUTE = '/stops';
 const stopsRouter = Router();
+stopsRouter.use(BASE_ROUTE, validateJWT);
 
 stopsRouter.get(BASE_ROUTE, async (req, res) => {
     return getStops(req, res);
