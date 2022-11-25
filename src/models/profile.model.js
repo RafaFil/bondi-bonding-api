@@ -36,7 +36,7 @@ const getPublicProfile = async (username) => {
             gender: 1,
             phone: 1,
             email: 1,
-            iconId: 1
+            iconKey: 1
         }
     };
 
