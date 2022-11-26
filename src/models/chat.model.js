@@ -2,9 +2,31 @@ const { getDb } = require('../configs/db.config');
 const { ObjectId } = require('mongodb');
 
 const COLLECTION_NAME = process.env.CHATS_COLLECTION;
-const BASE_PROJECTION = {};
 
 
+const findUserChats = async (username) => {
+
+    const PROJECTION = {
+        _id : 1,
+        members: 1,
+        messages: { $slice: [ "$messages", -1 ] }
+    };
+
+    console.log(username)
+    const db = getDb();
+    const result = await db.collection(COLLECTION_NAME)
+    .aggregate([
+        { $match: { members : "shaDav" } },
+        { $project: {
+            _id : 1,
+            members: 1,
+            messages: { $slice: [ "$messages", -1 ] }
+            }
+        }]
+    ).toArray();
+
+    return result[0]
+}
 
 const findChatById = async (chatId) => {
 
@@ -36,6 +58,7 @@ const uploadMessage = async (message, chatId) => {
 }
 
 module.exports = {
+    findUserChats,
     findChatById,
     uploadMessage
 }

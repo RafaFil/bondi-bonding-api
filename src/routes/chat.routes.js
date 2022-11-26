@@ -6,7 +6,7 @@ const chatRouter = Router();
 
 //Get all user chat
 chatRouter.get(BASE_ROUTE, async (req, res) => {
-
+    return getAllChats(req, res);
 });
 
 //Get a chat by chatId

@@ -1,7 +1,34 @@
-const { findChatById, uploadMessage } = require('../models/chat.model');
+const { findUserChats, findChatById, uploadMessage } = require('../models/chat.model');
 
 const getAllChats = async (req, res) => {
 
+    //const username = req.username;
+
+    findUserChats("shaDav").
+    then( result => {
+        
+        if (result) {
+            return res.status(200).json({
+                success: true,
+                data: result
+            });
+        }
+
+        if (!result) {
+            return res.status(200).json({
+                success: true,
+                message: 'Couldnt get the chats'
+            });
+        }
+
+    })
+    .catch( err => {
+
+        return res.status(500).json({
+            success: false,
+            message:'Internal server error'
+        });
+    });
 }
 
 const getChatById = async (req, res) => {
