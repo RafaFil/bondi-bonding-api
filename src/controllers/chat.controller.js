@@ -2,9 +2,9 @@ const { findUserChats, findChatById, uploadMessage, createChat } = require('../m
 
 const getAllChats = async (req, res) => {
 
-    //const username = req.username;
+    const username = req.username;
 
-    findUserChats("shaDav").
+    findUserChats(username).
     then( result => {
         
         if (result) {
@@ -118,17 +118,19 @@ const postMessageIntoChat = async (req, res) => {
 
 const startChat = async(req, res) => {
 
-    const {user1, user2} = req.body;
+    const user = req.username
 
-    if (!user1 || !user2){
+    const { user2 } = req.body;
+
+    if (!user2){
         return res.status(400).json({
             success : false,
-            message : "there must be two users in order to start a chat"
+            message : "there is no user to start a chat"
         });
     }
 
     const chat = {
-        members : [user1,user2],
+        members : [username, user2],
         messages : []
     }
 
@@ -148,5 +150,6 @@ const startChat = async(req, res) => {
 module.exports = {
     getAllChats,
     getChatById,
-    postMessageIntoChat
+    postMessageIntoChat,
+    startChat
 }

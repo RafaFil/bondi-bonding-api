@@ -42,7 +42,6 @@ app.use(cors());
 app.use(morgan('combined'));
 
 // public routes
-app.use(BASE_ROUTE, chatRouter);
 app.use(BASE_ROUTE, resetPasswordRouter);
 app.use(BASE_ROUTE, userRouter);
 app.use(BASE_ROUTE, staticRouter);
@@ -56,6 +55,7 @@ app.use(BASE_ROUTE, mapRouter);
 app.use(BASE_ROUTE, tripsRouter);
 app.use(BASE_ROUTE, profileRouter);
 app.use(BASE_ROUTE, filtersRouter);
+app.use(BASE_ROUTE, chatRouter);
 
 connectToServer()
 .then(() => {
