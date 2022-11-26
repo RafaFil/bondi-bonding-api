@@ -22,6 +22,7 @@ const tripsRouter = require('./src/routes/trips.routes');
 const profileRouter = require('./src/routes/profile.routes');
 const filtersRouter = require('./src/routes/filters.routes');
 const resetPasswordRouter = require('./src/routes/resetPassword.routes');
+const chatRouter = require('./src/routes/chat.routes');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -41,6 +42,7 @@ app.use(cors());
 app.use(morgan('combined'));
 
 // public routes
+app.use(BASE_ROUTE, chatRouter);
 app.use(BASE_ROUTE, resetPasswordRouter);
 app.use(BASE_ROUTE, userRouter);
 app.use(BASE_ROUTE, staticRouter);

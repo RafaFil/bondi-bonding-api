@@ -15,6 +15,8 @@ chatRouter.get(`${BASE_ROUTE}/:chatId`, async (req, res) => {
 });
 
 //Post a message into a chat
-chatRouter.post(BASE_ROUTE, async (req, res) => {
-
+chatRouter.post(`${BASE_ROUTE}/:chatId`, async (req, res) => {
+    return postMessageIntoChat(req, res);
 });
+
+module.exports = chatRouter;
