@@ -150,6 +150,7 @@ const startChat = async(req, res) => {
 const deleteChat = async (req, res) => {
 
     const chatId = req.params.chatId;
+    const username = req.username;
 
     if (typeof chatId !== "string" || chatId.length !==24) {
         return res.status(400).json({
@@ -158,7 +159,7 @@ const deleteChat = async (req, res) => {
         });
     }
 
-    deleteChatById(chatId)
+    deleteChatById(username, chatId)
     .then( result => {
         if (result.acknowledged) {
             return res.status(200).json({

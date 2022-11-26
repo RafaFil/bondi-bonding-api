@@ -9,7 +9,7 @@ const findUserChats = async (username) => {
     const db = getDb();
     const result = await db.collection(COLLECTION_NAME)
     .aggregate([
-        { $match: { members : "shaDav" } },
+        { $match: { members : username } },
         { $project: {
             _id : 1,
             members: 1,
@@ -60,12 +60,12 @@ const createChat = async (chat) => {
 
 }
 
-const deleteChatById = async (chatId) => {
+const deleteChatById = async (username,chatId) => {
     const db = getDb();
     const chatObjId = ObjectId(chatId);
     const result = await db.collection(COLLECTION_NAME)
     .deleteOne(
-        { _id: chatObjId }
+        { _id: chatObjId, $match : {members : username} }
     );
     
     return result;
