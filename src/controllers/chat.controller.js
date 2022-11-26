@@ -15,9 +15,9 @@ const getAllChats = async (req, res) => {
         }
 
         if (!result) {
-            return res.status(200).json({
-                success: true,
-                message: 'Couldnt get the chats'
+            return res.status(404).json({
+                success: false,
+                message: 'Could not get the chats'
             });
         }
 
@@ -38,7 +38,7 @@ const getChatById = async (req, res) => {
     if (typeof chatId !== "string" || chatId.length !==24) {
         return res.status(400).json({
             success : false,
-            message : "chat_id format is not valid"
+            message : "chatId format is not valid"
         });
     }
     
@@ -51,9 +51,9 @@ const getChatById = async (req, res) => {
             });
         }
         if (!result) {
-            return res.status(400).json({
+            return res.status(404).json({
                 success: false,
-                message: "chat couldnt be found"
+                message: "Chat could not be found"
             });
         }
     })
@@ -72,7 +72,7 @@ const postMessageIntoChat = async (req, res) => {
     if (typeof chatId !== "string" || chatId.length !==24) {
         return res.status(400).json({
             success : false,
-            message : "chat_id format is not valid"
+            message : "chatId format is not valid"
         });
     }
 
@@ -96,14 +96,14 @@ const postMessageIntoChat = async (req, res) => {
         if (result.acknowledged){
             return res.status(200).json({
                 success : true,
-                data : "Message sent"
+                data : `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s).`
             })
         }
         
         if (!result.acknowledged){
             return res.status(400).json({
                 success : false,
-                data : "Couldn´t send message"
+                message : "Couldn´t send message"
             })
         }
     })
@@ -116,13 +116,13 @@ const postMessageIntoChat = async (req, res) => {
 
 }
 
-const startChat = async(req, res) => {
+const createChat = async(req, res) => {
 
     const user = req.username
 
-    const { user2 } = req.body;
+    const { toUser } = req.body;
 
-    if (!user2){
+    if (!toUser){
         return res.status(400).json({
             success : false,
             message : "there is no user to start a chat"
@@ -130,13 +130,25 @@ const startChat = async(req, res) => {
     }
 
     const chat = {
-        members : [username, user2],
+        members : [username, toUser],
         messages : []
     }
 
     createChat(chat)
     .then( result => {
+        if (result.acknowledged) {
+            return res.status(200).json({
+                success : true,
+                data : result.insertedId
+            })
+        }
 
+        if (!result.acknowledged) {
+            return res.status(400).json({
+                success : false,
+                message : "chat could not be created"
+            })
+        }
     })
     .catch( err => {
         return res.status(500).json({
@@ -186,6 +198,6 @@ module.exports = {
     getAllChats,
     getChatById,
     postMessageIntoChat,
-    startChat,
+    createChat,
     deleteChat
 }
