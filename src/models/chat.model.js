@@ -6,13 +6,6 @@ const COLLECTION_NAME = process.env.CHATS_COLLECTION;
 
 const findUserChats = async (username) => {
 
-    const PROJECTION = {
-        _id : 1,
-        members: 1,
-        messages: { $slice: [ "$messages", -1 ] }
-    };
-
-    console.log(username)
     const db = getDb();
     const result = await db.collection(COLLECTION_NAME)
     .aggregate([
@@ -53,12 +46,23 @@ const uploadMessage = async (message, chatId) => {
             }
         }
     );
-    console.log(result);
+
     return result;
+}
+
+const createChat = async (chat) => {
+
+    const db = getDb();
+    const result = await db.collection(COLLECTION_NAME)
+    .insert(chat)
+
+    return result;
+
 }
 
 module.exports = {
     findUserChats,
     findChatById,
-    uploadMessage
+    uploadMessage,
+    createChat
 }

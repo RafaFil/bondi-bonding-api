@@ -19,4 +19,9 @@ chatRouter.post(`${BASE_ROUTE}/:chatId`, async (req, res) => {
     return postMessageIntoChat(req, res);
 });
 
+//start a chat with a user
+chatRouter.post(BASE_ROUTE, async (req, res) => {
+    
+});
+
 module.exports = chatRouter;

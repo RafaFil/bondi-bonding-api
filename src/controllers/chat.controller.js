@@ -1,4 +1,4 @@
-const { findUserChats, findChatById, uploadMessage } = require('../models/chat.model');
+const { findUserChats, findChatById, uploadMessage, createChat } = require('../models/chat.model');
 
 const getAllChats = async (req, res) => {
 
@@ -113,6 +113,35 @@ const postMessageIntoChat = async (req, res) => {
             message:'Internal server error'
         });
     });
+
+}
+
+const startChat = async(req, res) => {
+
+    const {user1, user2} = req.body;
+
+    if (!user1 || !user2){
+        return res.status(400).json({
+            success : false,
+            message : "there must be two users in order to start a chat"
+        });
+    }
+
+    const chat = {
+        members : [user1,user2],
+        messages : []
+    }
+
+    createChat(chat)
+    .then( result => {
+
+    })
+    .catch( err => {
+        return res.status(500).json({
+            success: false,
+            message:'Internal server error'
+        });
+    })
 
 }
 
