@@ -1,5 +1,6 @@
 const { Router } = require("express");
-const { getAllChats, getChatById, postMessageIntoChat, startChat } = require('../controllers/chat.controller');
+const { getAllChats, getChatById,
+        postMessageIntoChat, startChat, deleteChat } = require('../controllers/chat.controller');
 const { validateJWT } = require('../middlewares/validateJWT.middleware');
 
 const BASE_ROUTE = '/chat';
@@ -24,6 +25,11 @@ chatRouter.post(`${BASE_ROUTE}/:chatId`, async (req, res) => {
 //start a chat with a user
 chatRouter.post(BASE_ROUTE, async (req, res) => {
     return startChat(req, res);
+});
+
+//delete a chat
+chatRouter.delete(`${BASE_ROUTE}/:chatId`, async (req, res) => {
+    return deleteChat(req, res);
 });
 
 module.exports = chatRouter;

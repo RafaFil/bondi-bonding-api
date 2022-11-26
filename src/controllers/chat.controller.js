@@ -1,4 +1,4 @@
-const { findUserChats, findChatById, uploadMessage, createChat } = require('../models/chat.model');
+const { findUserChats, findChatById, uploadMessage, createChat, deleteChatById } = require('../models/chat.model');
 
 const getAllChats = async (req, res) => {
 
@@ -147,9 +147,44 @@ const startChat = async(req, res) => {
 
 }
 
+const deleteChat = async (req, res) => {
+
+    const chatId = req.params.chatId;
+
+    if (typeof chatId !== "string" || chatId.length !==24) {
+        return res.status(400).json({
+            success : false,
+            message : "chat_id format is not valid"
+        });
+    }
+
+    deleteChatById(chatId)
+    .then( result => {
+        if (result.acknowledged) {
+            return res.status(200).json({
+                success : true,
+                message : "Chat message"
+            })
+        }
+        if (!result.acknowledged) {
+            return res.status(400).json({
+                success : false,
+                message : "There was an error while trying to delete the chat"
+            })
+        }
+    })
+    .catch( err => {
+        return res.status(500).json({
+            success: false,
+            message:'Internal server error'
+        });
+    })
+}
+
 module.exports = {
     getAllChats,
     getChatById,
     postMessageIntoChat,
-    startChat
+    startChat,
+    deleteChat
 }

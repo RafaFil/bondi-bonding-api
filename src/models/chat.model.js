@@ -60,9 +60,21 @@ const createChat = async (chat) => {
 
 }
 
+const deleteChatById = async (chatId) => {
+    const db = getDb();
+    const chatObjId = ObjectId(chatId);
+    const result = await db.collection(COLLECTION_NAME)
+    .deleteOne(
+        { _id: chatObjId }
+    );
+    
+    return result;
+}
+
 module.exports = {
     findUserChats,
     findChatById,
     uploadMessage,
-    createChat
+    createChat,
+    deleteChatById
 }
