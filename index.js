@@ -22,6 +22,7 @@ const tripsRouter = require('./src/routes/trips.routes');
 const profileRouter = require('./src/routes/profile.routes');
 const filtersRouter = require('./src/routes/filters.routes');
 const resetPasswordRouter = require('./src/routes/resetPassword.routes');
+const chatRouter = require('./src/routes/chat.routes');
 
 const BASE_ROUTE = "/api/v1";
 
@@ -54,6 +55,7 @@ app.use(BASE_ROUTE, mapRouter);
 app.use(BASE_ROUTE, tripsRouter);
 app.use(BASE_ROUTE, profileRouter);
 app.use(BASE_ROUTE, filtersRouter);
+app.use(BASE_ROUTE, chatRouter);
 
 connectToServer()
 .then(() => {
