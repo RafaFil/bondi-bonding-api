@@ -50,7 +50,7 @@ const uploadMessage = async (message, chatId) => {
     return result;
 }
 
-const createChat = async (chat) => {
+const createAChat = async (chat) => {
 
     const db = getDb();
     const result = await db.collection(COLLECTION_NAME)
@@ -75,6 +75,6 @@ module.exports = {
     findUserChats,
     findChatById,
     uploadMessage,
-    createChat,
+    createAChat,
     deleteChatById
 }

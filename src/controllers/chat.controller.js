@@ -1,4 +1,4 @@
-const { findUserChats, findChatById, uploadMessage, createChat, deleteChatById } = require('../models/chat.model');
+const { findUserChats, findChatById, uploadMessage, createAChat, deleteChatById } = require('../models/chat.model');
 
 const getAllChats = async (req, res) => {
 
@@ -134,7 +134,7 @@ const createChat = async(req, res) => {
         messages : []
     }
 
-    createChat(chat)
+    createAChat(chat)
     .then( result => {
         if (result.acknowledged) {
             return res.status(200).json({
