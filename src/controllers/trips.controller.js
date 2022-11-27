@@ -106,7 +106,6 @@ const searchTrips = async ({ body }, res) => {
         likes: body.filters?.likes
     };
 
-    console.log(params);
     const result = await filterTrips(params);
 
     if (result.success) {

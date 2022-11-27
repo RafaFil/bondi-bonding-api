@@ -32,6 +32,7 @@ const getPublicProfile = async (username) => {
         $project: {
             _id: 0,
             description: 1,
+            username: 1,
             birthdate: 1,
             gender: 1,
             phone: 1,

@@ -1,4 +1,4 @@
-const { findUserChats, findChatById, uploadMessage, createAChat, deleteChatById } = require('../models/chat.model');
+const { findUserChats, findChatById, uploadMessage, createAChat, deleteChatById, findChatByMembers } = require('../models/chat.model');
 
 const getAllChats = async (req, res) => {
 
@@ -6,7 +6,6 @@ const getAllChats = async (req, res) => {
 
     findUserChats(username).
     then( result => {
-        
         if (result) {
             return res.status(200).json({
                 success: true,
@@ -17,13 +16,12 @@ const getAllChats = async (req, res) => {
         if (!result) {
             return res.status(404).json({
                 success: false,
-                message: 'Could not get the chats'
+                message: `No chats found for username ${username}`
             });
         }
 
     })
     .catch( err => {
-
         return res.status(500).json({
             success: false,
             message:'Internal server error'
@@ -53,14 +51,50 @@ const getChatById = async (req, res) => {
         if (!result) {
             return res.status(404).json({
                 success: false,
-                message: "Chat could not be found"
+                message: `Chat could not be found for id ${chatId}`
             });
         }
     })
     .catch( err => {
         return res.status(500).json({
             success: false,
-            message:'Internal server error'
+            message: 'Internal server error'
+        });
+    })
+}
+
+const getChatByMembers = async (req, res) => {
+    if (!req.body || !req.params.username) {
+        return res.status(400).json({
+            success: false,
+            message: 'Required field missing in request body: username'
+        });
+    }
+
+    const members = [ 
+        req.username,
+        req.params.username
+    ];
+
+    findChatByMembers(members)
+    .then( result => {
+        if (result) {
+            return res.status(200).json({
+                success: true,
+                data: result
+            });
+        }
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message: `No chat could be found for users ${members[0]} and ${members[1]}`
+            });
+        }
+    })
+    .catch( err => {
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error'
         });
     })
 }
@@ -71,8 +105,8 @@ const postMessageIntoChat = async (req, res) => {
 
     if (typeof chatId !== "string" || chatId.length !==24) {
         return res.status(400).json({
-            success : false,
-            message : "chatId format is not valid"
+            success: false,
+            message: "chatId format is not valid"
         });
     }
 
@@ -81,7 +115,7 @@ const postMessageIntoChat = async (req, res) => {
     if (!sender || !message ) {
         return res.status(400).json({
             success: false,
-            message: "Require fields: sender and message"
+            message: "Require fields missing. Required fields are sender, message"
         })
     }
 
@@ -103,14 +137,14 @@ const postMessageIntoChat = async (req, res) => {
         if (!result.acknowledged){
             return res.status(400).json({
                 success : false,
-                message : "Couldn´t send message"
+                message : "Invalid format. Could not send message"
             })
         }
     })
     .catch( err => {
         return res.status(500).json({
             success: false,
-            message:'Internal server error'
+            message: 'Internal server error'
         });
     });
 
@@ -118,42 +152,42 @@ const postMessageIntoChat = async (req, res) => {
 
 const createChat = async(req, res) => {
 
-    const user = req.username
+    const username = req.username
 
     const { toUser } = req.body;
 
     if (!toUser){
         return res.status(400).json({
-            success : false,
-            message : "there is no user to start a chat"
+            success: false,
+            message: "Missing required field 'toUser'"
         });
     }
 
     const chat = {
-        members : [username, toUser],
-        messages : []
+        members: [ username, toUser ],
+        messages: []
     }
 
     createAChat(chat)
     .then( result => {
         if (result.acknowledged) {
             return res.status(200).json({
-                success : true,
-                data : result.insertedId
+                success: true,
+                data: result.insertedId
             })
         }
 
         if (!result.acknowledged) {
             return res.status(400).json({
                 success : false,
-                message : "chat could not be created"
+                message : "Chat could not be created"
             })
         }
     })
     .catch( err => {
         return res.status(500).json({
             success: false,
-            message:'Internal server error'
+            message: 'Internal server error'
         });
     })
 
@@ -166,8 +200,8 @@ const deleteChat = async (req, res) => {
 
     if (typeof chatId !== "string" || chatId.length !==24) {
         return res.status(400).json({
-            success : false,
-            message : "chat_id format is not valid"
+            success: false,
+            message: "chatId format is not valid"
         });
     }
 
@@ -175,21 +209,22 @@ const deleteChat = async (req, res) => {
     .then( result => {
         if (result.acknowledged) {
             return res.status(200).json({
-                success : true,
-                message : "Chat message"
+                success: true,
+                message: "Chat deleted successfully"
             })
         }
         if (!result.acknowledged) {
             return res.status(400).json({
-                success : false,
-                message : "There was an error while trying to delete the chat"
+                success: false,
+                message: "There was an error while trying to delete the chat"
             })
         }
     })
     .catch( err => {
+        console.log(err);
         return res.status(500).json({
             success: false,
-            message:'Internal server error'
+            message: 'Internal server error'
         });
     })
 }
@@ -197,6 +232,7 @@ const deleteChat = async (req, res) => {
 module.exports = {
     getAllChats,
     getChatById,
+    getChatByMembers,
     postMessageIntoChat,
     createChat,
     deleteChat

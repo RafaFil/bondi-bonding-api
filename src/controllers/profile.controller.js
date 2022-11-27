@@ -1,18 +1,5 @@
+const { setProfilePicture } = require('../helpers/profileIcon.helper');
 const { getCompleteProfile, updateProfile, getPublicProfile } = require('../models/profile.model');
-const { getPublicUrl } = require('../models/profilePicture.model');
-
-const setProfilePicture = async (userDoc) => {
-    if (!userDoc.iconKey) {
-        return userDoc;
-    }
-    
-    const result = await getPublicUrl(userDoc.iconKey);
-    if (result.success) {
-        userDoc.iconUrl = result.url;
-    }
-
-    return userDoc;
-}
 
 const getProfile = async (req, res, profFn = getPublicProfile) => {
     profFn(req.params.username)

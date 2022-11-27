@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { getAllChats, getChatById,
-        postMessageIntoChat, createChat, deleteChat } = require('../controllers/chat.controller');
+        postMessageIntoChat, createChat, deleteChat, getChatByMembers } = require('../controllers/chat.controller');
 const { validateJWT } = require('../middlewares/validateJWT.middleware');
 
 const BASE_ROUTE = '/chat';
@@ -15,6 +15,11 @@ chatRouter.get(BASE_ROUTE, async (req, res) => {
 //Get a chat by chatId
 chatRouter.get(`${BASE_ROUTE}/:chatId`, async (req, res) => {
     return getChatById(req, res);
+});
+
+//Get a chat by chatId
+chatRouter.get(`${BASE_ROUTE}/member/:username`, async (req, res) => {
+    return getChatByMembers(req, res);
 });
 
 //Post a message into a chat
