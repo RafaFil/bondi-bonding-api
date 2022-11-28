@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongodb');
 const { getDb } = require('../configs/db.config');
+const { setProfilePicture } = require('../helpers/profileIcon.helper');
 
 const COLLECTION_NAME = process.env.TRIPS_COLLECTION;
 const STOPS_COLLECTION = process.env.STOPS_COLLECTION;
@@ -54,6 +55,18 @@ const LOOKUP = [
     { $unwind: { path: "$user" } }
 ];
 
+const setUserProfilePictures = async (result) => {
+    for (const res of result) {
+        if (!res.user) {
+            continue;
+        }
+
+        res.user = await setProfilePicture(res.user);
+    }
+
+    return result;
+}
+
 const findTripById = async (tripId) => {
     const tripArr = await getDb()
     .collection(COLLECTION_NAME)
@@ -65,9 +78,11 @@ const findTripById = async (tripId) => {
     .toArray();
 
     if (tripArr && tripArr.length > 0) {
+        await setUserProfilePictures(tripArr)
+
         return {
             success: true,
-            data: tripArr[0]
+            data:  tripArr[0]
         };
     }
 
@@ -84,6 +99,7 @@ const findTrips = async (matchQuery) => {
     ])
     .toArray();
 
+    await setUserProfilePictures(tripArr)
     return {
         success: true,
         data: tripArr
@@ -142,8 +158,6 @@ const filterTrips = async ({ myAge, myGender, from, to, minAge, maxAge, gender, 
         };
     }
 
-    console.log(matchQuery);
-
     const tripArr = await getDb()
     .collection(COLLECTION_NAME)
     .aggregate([
@@ -153,6 +167,7 @@ const filterTrips = async ({ myAge, myGender, from, to, minAge, maxAge, gender, 
     ])
     .toArray();
 
+    await setUserProfilePictures(tripArr)
     return {
         success: true,
         data: tripArr

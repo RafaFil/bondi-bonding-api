@@ -5,6 +5,7 @@ const setProfilePicture = async (userDoc) => {
         return userDoc;
     }
     const result = await getPublicUrl(userDoc.iconKey);
+
     if (result.success) {
         userDoc.iconUrl = result.url;
     }
