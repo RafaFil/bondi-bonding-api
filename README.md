@@ -10,6 +10,6 @@ Bondi Bonding API REST
 
 ## Hosted version
 
-`https://github.com/RafaFil/bondi-bonding-api/tree/host`
+branch Host: https://github.com/RafaFil/bondi-bonding-api/tree/host
 
-Link: https://bondibonding.azurewebsites.net
+Link api: https://bondibonding.azurewebsites.net
